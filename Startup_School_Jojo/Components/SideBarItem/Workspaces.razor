@@ -1,0 +1,46 @@
+@using DateBaseLogic
+@inject NavigationManager NavManager
+@inject DB db
+
+<div class="sidebar-window workspaces @View">
+    <div class="sidebar-head">
+        <p class="sidebar-name"></p>
+    </div>
+    <ul class="sidebar-content">
+        <li class="sidebar-content-add"><button class="sidebar-btn" @onclick='() => AddWorkspace()'>Создать пространство</button></li>
+        @foreach (var workspace in @db.GetWorkspaces())
+        {
+            <li class="sidebar-item workspace">
+                <button class="workspace-edit" @onclick='() => EditWorkspace(workspace.Id)'>@workspace.Name</button>
+                <ul class="workspace-samples">
+                    @foreach (var plugin_id in @workspace.Plugin_id)
+                    {
+                        <li class="workspace-sample sample">
+                            <p class="sample-name">@db.GetPlugin(plugin_id)</p>
+                        </li>
+                    }
+                </ul>
+                <button class="workspace-edit" @onclick='() => EditWorkspace(workspace.Id)'>E</button>
+                <button class="workspace-delete" @onclick='() => DeleteWorkspace(workspace.Id)'>D</button>
+            </li>
+        }
+    </ul>
+</div>
+
+
+@code {
+    [Parameter]
+    public string? View { get; set; }
+
+    public void AddWorkspace(){
+        NavManager.NavigateTo("/WorkspaceEditor/" + Guid.NewGuid().ToString());
+    }
+
+    public void DeleteWorkspace(int workspace_id){
+        db.RemoveWorkspace(workspace_id);
+    }
+
+    public void EditWorkspace(int workspace_id){
+        NavManager.NavigateTo("/WorkspaceEditor/" + db.GetGuid(workspace_id));
+    }
+}

@@ -1,0 +1,79 @@
+@page "/WorkspaceEditor/{guid}"
+@using DateBaseLogic
+@using System.Collections.Generic
+@inject NavigationManager NavManager
+@inject DB db
+<style>
+.editor-content{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+</style>
+<div class="editor-content">
+    <h4>WorkspaceEditr</h4>
+
+    <div>
+        <label for="workspaceName">Название:</label>
+        <input id="workspaceName" type="text" @bind="@WorkspaceName" />
+    </div>
+
+    <div>
+        <label for="availablePlugins">Доступные плагины</label>
+        <ul id="availablePlugins">
+            @foreach (var plugin in db.GetPlugins())
+            {
+                <li>
+                    <button @onclick='() => AddPluginInWorkspace(plugin.Id)'>@plugin.Name</button>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div>
+        <label for="addedPlugins">Добавленные плагины</label>
+        <ul id="addedPlugins">
+            @foreach (var plugin_id in AddedPlugins)
+            {
+                <li>@db.GetPlugin(plugin_id)</li>
+            }
+        </ul>
+    </div>
+
+    <button @onclick="@SaveData">Сохранить</button>
+
+    <button @onclick="@LoadWorkspace">Сохранить и войти</button>
+
+</div>
+
+@code {
+    [Parameter]
+    public string? guid { get; set; }
+    private string WorkspaceName { get; set; } = "";
+
+    // Заменить на свойства с реальными данными
+    public List<int> AddedPlugins { get; set; } = new List<int>{};
+
+    public void AddPluginInWorkspace(int plugin_id){
+        AddedPlugins.Add(plugin_id);
+    }
+
+    private void SaveData()
+    {
+        db.AddWorkspace(new Workspace {
+            Id = db.GetWorkspaces().Count,
+            Name = WorkspaceName,
+            Plugin_id = AddedPlugins,
+            Guid_id = guid
+        });
+    }
+    
+    private void LoadWorkspace(){
+        SaveData();
+        NavManager.NavigateTo("/Workspace/" + guid);
+    }
+}
