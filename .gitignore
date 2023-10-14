@@ -11,6 +11,8 @@
 *.suo
 *.user
 *.sln.docstates
+bin/
+obj/
 
 # Build results
 [Dd]ebug/
@@ -56,6 +58,9 @@ x64/
 .builds
 *.pidb
 *.scc
+*.exe
+*.AssemblyInfo.cs
+*.cache
 
 # Visual C++ cache files
 ipch/
