@@ -32,7 +32,7 @@
     public string? View { get; set; }
 
     public void AddWorkspace(){
-        NavManager.NavigateTo("/WorkspaceEditor/" + Guid.NewGuid().ToString());
+        NavManager.NavigateTo("/WorkspaceAdd/" + Guid.NewGuid().ToString());
     }
 
     public void DeleteWorkspace(string workspace_id){

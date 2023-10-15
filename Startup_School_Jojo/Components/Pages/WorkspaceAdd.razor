@@ -1,17 +1,18 @@
-@page "/WorkspaceEditor/{guid}"
+@page "/WorkspaceAdd/{guid}"
 
 @using System.Collections.Generic
 @inject ApplicationDbContext dbContext
 @inject NavigationManager NavManager
 <style>
-    .editor-content {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
+.editor-content{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 </style>
 <div class="editor-content">
     <h4>WorkspaceEditr</h4>
@@ -51,48 +52,37 @@
 
 @code {
     [Parameter]
-    public string guid { get; set; }
-    Workspace work;
-    private string WorkspaceName { get; set; }
-    protected override void OnInitialized()
-    {
-        work = dbContext.Workspaces.FirstOrDefault(w => w.Id == guid);
-        WorkspaceName = work.Name;
-        // Здесь можно добавить логику, связанную с отображением страницы с использованием хеш-кода
-    }
-
+    public string? guid { get; set; }
+    private string WorkspaceName { get; set; } = "";
 
     // Заменить на свойства с реальными данными
-    public List<string> AddedPlugins { get; set; } = new List<string> { };
+    public List<string> AddedPlugins { get; set; } = new List<string>{};
 
-    public void AddPluginInWorkspace(string plugin_id)
-    {
+    public void AddPluginInWorkspace(string plugin_id){
         AddedPlugins.Add(plugin_id);
     }
 
-
     private void SaveData()
     {
-
-        work.Name = WorkspaceName;
-        work.Icon = "";
-        work.Settings = "";
-        dbContext.Workspaces.Update(work);
+        dbContext.Workspaces.Add(new Workspace {
+            Id = guid,
+            Name = WorkspaceName,
+            Icon = "",
+            Settings = ""
+        });
+        
+        foreach(string plugin_id in AddedPlugins){
+            dbContext.WorkspacePluginRelations.Add(new WorkspacePluginRelation{
+                WorkspaceId = guid,
+                PluginId = plugin_id
+            });
+        }
         dbContext.SaveChanges();
-
-        @* foreach (string plugin_id in AddedPlugins)
-        {
-            dbContext.WorkspacePluginRelations.Add(new WorkspacePluginRelation
-                {
-                    WorkspaceId = guid,
-                    PluginId = plugin_id
-                });
-        } *@
+        dbContext.SaveChanges();
         StateHasChanged();
     }
-
-    private void LoadWorkspace()
-    {
+    
+    private void LoadWorkspace(){
         SaveData();
         NavManager.NavigateTo("/Workspace/" + guid);
     }

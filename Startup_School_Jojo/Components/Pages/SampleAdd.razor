@@ -1,4 +1,4 @@
-@page "/SampleEditor/{guid}"
+@page "/SampleAdd/{guid}"
 
 @inject ApplicationDbContext dbContext
 @inject NavigationManager NavManager
@@ -27,32 +27,26 @@
 @code {
     [Parameter]
     public string guid { get; set; }
-    Sample sample;
-    private string SampleName { get; set; }
-
+    private string SampleName { get; set; } = ""; 
     private string plugin_id { get; set; } 
-
-    protected override void OnInitialized()
-    {
-        sample = dbContext.Samples.FirstOrDefault(s => s.Id == guid);
-        SampleName = sample.Name;
-        plugin_id = dbContext.Plugins.FirstOrDefault().Id;
-        // Здесь можно добавить логику, связанную с отображением страницы с использованием хеш-кода
-    }
     private string StateScheme {get;set;} = "StateScheme";
 
     private string Description {get;set;} = "Description";
+    protected override void OnInitialized()
+    {
+        plugin_id = dbContext.Plugins.FirstOrDefault().Id;
+        // Здесь можно добавить логику, связанную с отображением страницы с использованием хеш-кода
+    }
     private void SaveData()
     {
-        
-            sample.Name = SampleName;
-            sample.PluginId = plugin_id;
-            sample.UserId = 1;
-            sample.State = StateScheme;
-            sample.Description = Description;
-            sample.Color = "#fff";
-        
-        dbContext.Samples.Update(sample);
+        dbContext.Samples.Add(new Sample{
+            Name = SampleName,
+            PluginId = plugin_id,
+            UserId = 1,
+            State = StateScheme,
+            Description = Description,
+            Color = "#fff"
+        });
         dbContext.SaveChanges();
         NavManager.NavigateTo("/");
     }

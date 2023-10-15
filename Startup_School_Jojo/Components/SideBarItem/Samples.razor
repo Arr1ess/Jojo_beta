@@ -22,7 +22,7 @@
     public string? View { get; set; }
 
     public void AddSample(){
-        NavManager.NavigateTo("/SampleEditor/" + Guid.NewGuid().ToString());
+        NavManager.NavigateTo("/SampleAdd/" + Guid.NewGuid().ToString());
     }
 
     public void EditSample(string sample_id){
