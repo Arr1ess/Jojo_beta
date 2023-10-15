@@ -56,7 +56,7 @@
     private string WorkspaceName { get; set; } = "";
 
     // Заменить на свойства с реальными данными
-    public List<int> AddedPlugins { get; set; } = new List<int>{};
+    public List<int> AddedPlugins { get; set; } = new List<int>{ 1, 2, 3};
 
     public void AddPluginInWorkspace(int plugin_id){
         AddedPlugins.Add(plugin_id);
@@ -74,6 +74,6 @@
     
     private void LoadWorkspace(){
         SaveData();
-        NavManager.NavigateTo("/Workspace/" + guid);
+        NavManager.NavigateTo("/workspace/" + guid);
     }
 }

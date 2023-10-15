@@ -1,0 +1,40 @@
+﻿version: '3.4'
+
+services:
+# Сервис для разворачивания контейнера с базой данных
+  database:
+    image: postgres:latest
+    container_name: database
+    volumes:
+      - /var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=jojo
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-d", "animal-chipization" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  jojoapp:
+    image: jojoapp
+    container_name: jojoapp
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      - DB_HOST=database
+      - DB_NAME=jojo
+      - DB_USER=user
+      - DB_PASSWORD=password
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://planetit:8080/ || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 8

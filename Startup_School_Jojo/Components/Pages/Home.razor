@@ -1,14 +1,14 @@
 @page "/"
 @inject NavigationManager NavManager
 
-<button @onclick='() => AddWorkspace()'>Создать Workspace</button>
-<button @onclick='() => NavToRandom()'>Перейти в комнату</button>
+<button class="btn btn-primary" @onclick='() => AddWorkspace()'>Создать Workspace</button>
+<button class="btn btn-primary" @onclick='() => NavToRandom()'>Перейти в комнату</button>
 
 @code{
     public void AddWorkspace(){
         NavManager.NavigateTo("/WorkspaceEditor/" + Guid.NewGuid().ToString());
     }
     public void NavToRandom() {
-        NavManager.NavigateTo("/call/" + Guid.NewGuid().ToString());
+        NavManager.NavigateTo("/workspace/" + Guid.NewGuid().ToString());
     }
 }
