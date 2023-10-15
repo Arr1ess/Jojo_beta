@@ -1,11 +1,13 @@
 @page "/"
 @inject NavigationManager NavManager
+@inject ApplicationDbContext ApplicationDbContext
 
 <button @onclick='() => AddWorkspace()'>Создать Workspace</button>
 <button @onclick='() => NavToRandom()'>Перейти в комнату</button>
 
 @code{
     public void AddWorkspace(){
+        ApplicationDbContext.Workspaces.FirstOrDefault(w => w.Id == "");
         NavManager.NavigateTo("/WorkspaceEditor/" + Guid.NewGuid().ToString());
     }
     public void NavToRandom() {

@@ -1,0 +1,53 @@
+@page "/SampleEditor/{guid}"
+
+@inject ApplicationDbContext dbContext
+@inject NavigationManager NavManager
+
+
+<div class="sample-editor">
+    <h3>Редактор Шаблонов</h3>
+    <div>
+        <label for="sampleName">Название:</label>
+        <input id="sampleName" type="text" @bind="@SampleName" />
+    </div>
+    <div class="selectPlugin">
+        <select @bind="@plugin_id">
+            @foreach(var plugin in @dbContext.Plugins){
+                <option value="@plugin.Id">@plugin.Name</option>
+            }
+        </select>
+    </div>
+    <input type="text" value="@StateScheme "/>
+    <input type="text" value="@Description  "/>
+
+    <button @onclick="@SaveData">Сохранить</button>
+</div>
+
+
+@code {
+    [Parameter]
+    public string guid { get; set; }
+    private string SampleName { get; set; } = ""; 
+    private string plugin_id { get; set; } 
+    private string StateScheme {get;set;} = "StateScheme";
+
+    private string Description {get;set;} = "Description";
+    protected override void OnInitialized()
+    {
+        plugin_id = dbContext.Plugins.FirstOrDefault().Id;
+        // Здесь можно добавить логику, связанную с отображением страницы с использованием хеш-кода
+    }
+    private void SaveData()
+    {
+        dbContext.Samples.Add(new Sample{
+            Name = SampleName,
+            PluginId = plugin_id,
+            UserId = 1,
+            State = StateScheme,
+            Description = Description,
+            Color = "#fff"
+        });
+        dbContext.SaveChanges();
+        NavManager.NavigateTo("/");
+    }
+}

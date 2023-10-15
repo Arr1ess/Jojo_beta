@@ -1,5 +1,5 @@
-@using DateBaseLogic
-@inject DB db
+@inject ApplicationDbContext dbContext
+@inject NavigationManager NavManager
 
 <div class="sidebar-window samples @View">
     <div class="sidebar-head">
@@ -7,11 +7,11 @@
     </div>
     <ul class="sidebar-content">
         <li class="sidebar-content-add"><button class="sidebar-btn" @onclick='() => AddSample()'>Создать Sample</button></li>
-        @foreach (var sample in @db.GetSamples())
+        @foreach (var sample in @dbContext.Samples)
         {
             <li class="sidebar-item sample">
                 <p class="sample-name">@sample.Name</p>
-                <button class="sample-edit" >E</button>
+                <button class="sample-edit" @onclick='() => EditSample(sample.Id)'>E</button>
                 <button class="sample-delete" @onclick='() => DeleteSample(sample.Id)'>D</button>
             </li>
         }
@@ -22,11 +22,18 @@
     public string? View { get; set; }
 
     public void AddSample(){
-        db.AddSample();
+        NavManager.NavigateTo("/SampleEditor/" + Guid.NewGuid().ToString());
     }
 
-    public void DeleteSample(int sample_id){
-        db.RemoveSample(sample_id);
+    public void EditSample(string sample_id){
+        NavManager.NavigateTo("/SampleEditor/" + sample_id);
     }
-    
+    public void DeleteSample(string sample_id){
+        var sample = dbContext.Samples.FirstOrDefault(s => s.Id == sample_id);
+        if(sample is not null){
+            dbContext.Samples.Remove(sample);
+            dbContext.SaveChanges();
+        }
+        
+    }
 }

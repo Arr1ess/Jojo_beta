@@ -1,6 +1,5 @@
-@using DateBaseLogic
+@inject ApplicationDbContext dbContext
 @inject NavigationManager NavManager
-@inject DB db
 
 <div class="sidebar-window workspaces @View">
     <div class="sidebar-head">
@@ -8,18 +7,18 @@
     </div>
     <ul class="sidebar-content">
         <li class="sidebar-content-add"><button class="sidebar-btn" @onclick='() => AddWorkspace()'>Создать пространство</button></li>
-        @foreach (var workspace in @db.GetWorkspaces())
+        @foreach (var workspace in @dbContext.Workspaces)
         {
             <li class="sidebar-item workspace">
-                <button class="workspace-edit" @onclick='() => EditWorkspace(workspace.Id)'>@workspace.Name</button>
-                <ul class="workspace-samples">
-                    @foreach (var plugin_id in @workspace.Plugin_id)
+                <button class="workspace-edit" @onclick='() => JoinWorkspace(workspace.Id)'>@workspace.Name</button>
+                @* <ul class="workspace-samples">
+                    @foreach (var plugin in @dbContext.Plugins.Where(p => dbContext.WorkspacePluginRelations.Where(wpr => wpr.WorkspaceId == workspace.Id).Select(wpr => wpr.PluginId).Contains(p.Id)))
                     {
-                        <li class="workspace-sample sample">
-                            <p class="sample-name">@db.GetPlugin(plugin_id)</p>
+                        <li class="workspace-plugin plugin">
+                            <p class="plugin-name">@plugin.Name</p>
                         </li>
                     }
-                </ul>
+                </ul> *@
                 <button class="workspace-edit" @onclick='() => EditWorkspace(workspace.Id)'>E</button>
                 <button class="workspace-delete" @onclick='() => DeleteWorkspace(workspace.Id)'>D</button>
             </li>
@@ -36,11 +35,18 @@
         NavManager.NavigateTo("/WorkspaceEditor/" + Guid.NewGuid().ToString());
     }
 
-    public void DeleteWorkspace(int workspace_id){
-        db.RemoveWorkspace(workspace_id);
+    public void DeleteWorkspace(string workspace_id){
+        var workspace = dbContext.Workspaces.FirstOrDefault(w => w.Id == workspace_id);
+        if(workspace is not null){
+            dbContext.Workspaces.Remove(workspace);
+            dbContext.SaveChanges();
+        }
     }
 
-    public void EditWorkspace(int workspace_id){
-        NavManager.NavigateTo("/WorkspaceEditor/" + db.GetGuid(workspace_id));
+    public void EditWorkspace(string workspace_id){
+        NavManager.NavigateTo("/WorkspaceEditor/" + workspace_id);
+    }
+    public void JoinWorkspace(string workspace_id){
+        NavManager.NavigateTo("/Workspace/" + workspace_id);
     }
 }
