@@ -1,10 +1,32 @@
 @page "/"
+@using BlazorMonaco.Editor;
+@using Startup_School_Jojo.Db;
 @inject NavigationManager NavManager
+@inject ApplicationDbContext ApplicationDbContext
 
 <button @onclick='() => AddWorkspace()'>Создать Workspace</button>
-
+<div style="width:100%;height:500px;">
+    <StandaloneCodeEditor @ref="_editor" Id="my-editor-instance-id" ConstructionOptions="EditorConstructionOptions" />
+</div>
+<style>
+    .monaco-editor-container { /* for all editor instances */
+        height: 300px;
+    }
+</style>
 @code{
+    private StandaloneCodeEditor _editor = null;
     public void AddWorkspace(){
-        NavManager.NavigateTo("/WorkspaceEditor/" + Guid.NewGuid().ToString());
+        NavManager.NavigateTo("/WorkspaceEditor/" + guid.ToString());
+    }
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+            {
+                AutomaticLayout = true,
+                Language = "javascript",
+                Value = "function xyz() {\n" +
+                        "   console.log(\"Hello world!\");\n" +
+                        "}"
+            };
     }
 }
