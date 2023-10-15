@@ -3,16 +3,36 @@
 @inject ApplicationDbContext ApplicationDbContext
 
 <div class="container">
-    <h3>Добро пожаловать на главную страницу!</h3>
-    <p>Здесь вы можете выбрать одно из действий:</p>
+    <h3>Добро пожаловать на наш сервис онлайн образования!</h3>
+    <p>Мы предлагаем удобное и эффективное предоставление образовательных услуг с помощью нашей платформы. Наш сервис объединяет различные решения и возможности, чтобы полностью удовлетворить ваши потребности.</p>
 
     <div class="row">
         <div class="col">
-            <button class="btn btn-primary" @onclick='() => AddWorkspace()'>Создать Workspace</button>
+            <h4>Особенности нашего сервиса:</h4>
+            <ul>
+                <li>Видеоконференция без ограничений</li>
+                <li>Интерактивное взаимодействие</li>
+                <li>Удаленное хранение необходимой информации</li>
+                <li>Возможность проведения онлайн занятий с использованием white-board</li>
+                <li>Live-coding платформа для программирования</li>
+                <li>Система ветвления сценария занятия</li>
+                <li>Онлайн хранилище для хранения материалов и ресурсов</li>
+            </ul>
         </div>
         <div class="col">
-            <button class="btn btn-primary" @onclick='() => NavToRandom()'>Перейти в комнату</button>
+            <h4>Наша целевая аудитория:</h4>
+            <ul>
+                <li>Физические лица: индивидуальные предприниматели, самозанятые</li>
+                <li>Юридические лица, занимающиеся предоставлением образовательных услуг</li>
+            </ul>
         </div>
+    </div>
+
+    <p>Мы сосредоточены на обслуживании жителей РФ, стран СНГ и КНДР.</p>
+
+    <div class="text-center">
+        <button class="btn btn-primary" @onclick='() => AddWorkspace()'>Создать Workspace</button>
+        <button class="btn btn-primary" @onclick='() => NavToRandom()'>Перейти в комнату</button>
     </div>
 </div>
 
@@ -24,6 +44,6 @@
 
     public void NavToRandom()
     {
-        NavManager.NavigateTo("/call/" + Guid.NewGuid().ToString());
+        NavManager.NavigateTo("/workspace/" + Guid.NewGuid().ToString());
     }
 }

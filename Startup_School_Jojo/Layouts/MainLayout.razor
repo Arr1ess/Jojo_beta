@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject ApplicationDbContext dbContext
 
 <PageTitle>Startup_School_Jojo</PageTitle>
 
@@ -8,3 +9,17 @@
         @Body
     </div>
 </div>
+@code {
+    protected override void OnInitialized()
+    {
+        dbContext.Plugins.Add(new Plugin
+            {
+                Name = "VS Code",
+                Icon = "",
+                BackgroundImage = "",
+                Description = "Редактор кода",
+                StateScheme = ""
+            });
+        dbContext.SaveChanges();
+    }
+}
