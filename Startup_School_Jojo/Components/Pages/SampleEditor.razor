@@ -3,34 +3,50 @@
 @inject ApplicationDbContext dbContext
 @inject NavigationManager NavManager
 
-
-<div class="sample-editor">
+<div class="container">
     <h3>Редактор Шаблонов</h3>
-    <div>
+
+    <div class="form-group">
         <label for="sampleName">Название:</label>
-        <input id="sampleName" type="text" @bind="@SampleName" />
+        <input id="sampleName" class="form-control" type="text" @bind="@SampleName" />
     </div>
-    <div class="selectPlugin">
-        <select @bind="@plugin_id">
-            @foreach(var plugin in @dbContext.Plugins){
+
+    <div class="form-group">
+        <label for="plugin">Плагин:</label>
+        <select id="plugin" class="form-control" @bind="@plugin_id">
+            @foreach (var plugin in dbContext.Plugins)
+            {
                 <option value="@plugin.Id">@plugin.Name</option>
             }
         </select>
     </div>
-    <input type="text" value="@StateScheme "/>
-    <input type="text" value="@Description  "/>
 
-    <button @onclick="@SaveData">Сохранить</button>
+    <div class="form-group">
+        <label for="stateScheme">State Scheme:</label>
+        <input id="stateScheme" class="form-control" type="text" @bind="@StateScheme" />
+    </div>
+
+    <div class="form-group">
+        <label for="description">Описание:</label>
+        <input id="description" class="form-control" type="text" @bind="@Description" />
+    </div>
+
+    <button class="btn btn-primary" @onclick="@SaveData">Сохранить</button>
 </div>
 
 
 @code {
     [Parameter]
     public string guid { get; set; }
+
     Sample sample;
     private string SampleName { get; set; }
 
-    private string plugin_id { get; set; } 
+    private string plugin_id { get; set; }
+
+    private string StateScheme { get; set; } = "StateScheme";
+
+    private string Description { get; set; } = "Description";
 
     protected override void OnInitialized()
     {
@@ -39,19 +55,16 @@
         plugin_id = dbContext.Plugins.FirstOrDefault().Id;
         // Здесь можно добавить логику, связанную с отображением страницы с использованием хеш-кода
     }
-    private string StateScheme {get;set;} = "StateScheme";
 
-    private string Description {get;set;} = "Description";
     private void SaveData()
     {
-        
-            sample.Name = SampleName;
-            sample.PluginId = plugin_id;
-            sample.UserId = 1;
-            sample.State = StateScheme;
-            sample.Description = Description;
-            sample.Color = "#fff";
-        
+        sample.Name = SampleName;
+        sample.PluginId = plugin_id;
+        sample.UserId = 1;
+        sample.State = StateScheme;
+        sample.Description = Description;
+        sample.Color = "#fff";
+
         dbContext.Samples.Update(sample);
         dbContext.SaveChanges();
         NavManager.NavigateTo("/");

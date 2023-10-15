@@ -2,15 +2,28 @@
 @inject NavigationManager NavManager
 @inject ApplicationDbContext ApplicationDbContext
 
-<button @onclick='() => AddWorkspace()'>Создать Workspace</button>
-<button @onclick='() => NavToRandom()'>Перейти в комнату</button>
+<div class="container">
+    <h3>Добро пожаловать на главную страницу!</h3>
+    <p>Здесь вы можете выбрать одно из действий:</p>
 
-@code{
-    public void AddWorkspace(){
-        ApplicationDbContext.Workspaces.FirstOrDefault(w => w.Id == "");
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-primary" @onclick='() => AddWorkspace()'>Создать Workspace</button>
+        </div>
+        <div class="col">
+            <button class="btn btn-primary" @onclick='() => NavToRandom()'>Перейти в комнату</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    public void AddWorkspace()
+    {
         NavManager.NavigateTo("/WorkspaceEditor/" + Guid.NewGuid().ToString());
     }
-    public void NavToRandom() {
+
+    public void NavToRandom()
+    {
         NavManager.NavigateTo("/call/" + Guid.NewGuid().ToString());
     }
 }
