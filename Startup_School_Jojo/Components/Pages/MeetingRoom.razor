@@ -1,0 +1,66 @@
+@page "/call/{RoomGuid}"
+@using Startup_School_Jojo.Components.Plugins;
+
+<div class="container-fluid">
+    <div class="row">
+        @foreach(var item in Plugins)
+        {
+            <button class="col-2 btn-outline-primary" @onclick="@(() => {OnTypeChange(item);})">
+                @item.Name
+            </button>
+        }
+    </div>
+    <div class="row">
+        <div class="col-8">
+            @if (selectedType is not null)
+            {
+                <div class="border border-primary my-1 p-1">
+                    <DynamicComponent Type="@selectedType" />
+                </div>
+            }
+        </div>
+        <div class ="col-4 align-items-center">
+            <div id="jitsi-container" class="row align-items-center" style="width: 450px; height: 400px; background-color: black;">
+            </div>
+            <button id="start" class="btn btn-light btn-lg" type="button"><b>Подключиться</b></button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var button = document.querySelector('#start');
+    var container = document.querySelector('#jitsi-container');
+    var api = null;
+
+    button.addEventListener('click', () => {
+        var url = window.location.href
+        var randomString = url.substring(url.lastIndexOf('/') + 1)
+
+        var domain = "meet.jit.si";
+        var options = {
+            "roomName": randomString,
+            "displayName": "Суперкомната",
+            "parentNode": container,
+            "width": 450,
+            "height": 400
+        };
+        api = new JitsiMeetExternalAPI(domain, options);
+        button.style.display = "none";
+    });
+</script>
+@code {
+    [Parameter]
+    public string RoomGuid { get; set; }
+    public List<Type> Plugins { get; set; } = new List<Type> { typeof(FirstPlugin), typeof(SecondPlugin) };
+    private Type? selectedType = typeof(FirstPlugin);
+
+    protected override void OnInitialized()
+    {
+        // Здесь можно добавить логику, связанную с отображением страницы с использованием хеш-кода
+    }
+    private void OnTypeChange(Type type)
+    {
+        selectedType = type;
+    }
+}

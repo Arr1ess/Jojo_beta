@@ -9,7 +9,7 @@
 .sidebar-menu{
     display: flex;
     position: relative;
-    z-index: 2;
+    z-index: 10;
     flex-direction: column;
     width: 72px;
     background-color: white;
