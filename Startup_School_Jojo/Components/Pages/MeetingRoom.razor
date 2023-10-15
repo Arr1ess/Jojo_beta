@@ -1,4 +1,4 @@
-@page "/call/{RoomGuid}"
+@page "/workspace/{RoomGuid}"
 @using Startup_School_Jojo.Components.Plugins;
 
 <div class="container-fluid">
@@ -52,8 +52,8 @@
 @code {
     [Parameter]
     public string RoomGuid { get; set; }
-    public List<Type> Plugins { get; set; } = new List<Type> { typeof(FirstPlugin), typeof(SecondPlugin) };
-    private Type? selectedType = typeof(FirstPlugin);
+    public List<Type> Plugins { get; set; } = new List<Type> { typeof(Plugins.CodeEditor), typeof(SecondPlugin) };
+    private Type? selectedType = typeof(Plugins.CodeEditor);
 
     protected override void OnInitialized()
     {
